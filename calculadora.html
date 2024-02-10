@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+    <!-- Inclua a biblioteca Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            background-color: #333;
+            padding: 15px;
+            text-align: center;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .navbar button {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .calculator-container {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .calculator {
+            position: absolute;
+            background-color: #333333;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #555555;
+            border-radius: 4px;
+            font-size: 18px;
+            color: #333333;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .closebutão {
+            background-color: red;
+        }
+
+        .closebutão:hover {
+            background-color: rgb(182, 3, 3);
+        }
+
+        /* Estilos adicionais para os temas */
+        body.dark-theme {
+            background-color: #222;
+            color: #fff;
+
+            .section {
+                background-color: #222;
+            }
+
+            .section-menu {
+                background-color: #222;
+            }
+
+            .navbar {
+                background-color: #444;
+            }
+
+            .calculator {
+                background-color: #555;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            button {
+                background-color: #007BFF;
+                color: #ffffff;
+            }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+            .closebutão {
+                background-color: red;
+            }
+
+            .closebutão:hover {
+                background-color: rgb(182, 3, 3);
+            }
+        }
+
+        /* Estilos para as seções */
+        .section {
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .section-menu {
+            padding: auto;
+            margin: auto;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body class="dark-theme"> <!-- Inicialmente definido como Dark Mode -->
+    <div class="navbar">
+        <!-- Botão de Menu com ícone -->
+        <button onclick="toggleMenu()">
+            <i class="fas fa-bars"></i> Menu
+        </button>
+        
+        <!-- Botão de Calculadora com ícone -->
+        <button onclick="activateCalculator()">
+            <i class="fas fa-calculator"></i> Calculadora
+        </button>
+    </div>
+
+    <!-- Conteúdo da Calculadora (inicialmente oculto) -->
+    <div id="calculator-container" class="calculator-container">
+        <div id="calculator" class="calculator">
+            <input type="text" id="display" readonly>
+
+            <div>
+                <button onclick="appendToDisplay('7')">7</button>
+                <button onclick="appendToDisplay('8')">8</button>
+                <button onclick="appendToDisplay('9')">9</button>
+                <button onclick="appendToDisplay('/')">/</button>
+            </div>
+
+            <div>
+                <button onclick="appendToDisplay('4')">4</button>
+                <button onclick="appendToDisplay('5')">5</button>
+                <button onclick="appendToDisplay('6')">6</button>
+                <button onclick="appendToDisplay('*')">*</button>
+            </div>
+
+            <div>
+                <button onclick="appendToDisplay('1')">1</button>
+                <button onclick="appendToDisplay('2')">2</button>
+                <button onclick="appendToDisplay('3')">3</button>
+                <button onclick="appendToDisplay('-')">-</button>
+            </div>
+
+            <div>
+                <button onclick="appendToDisplay('0')">0</button>
+                <button onclick="clearDisplay()">C</button>
+                <button onclick="calculateResult()">=</button>
+                <button onclick="appendToDisplay('+')">+</button>
+                <button onclick="removeLastCharacter()">Backspace</button>
+                <button onclick="closeCalculator()" class="closebutão" >Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Janela do Menu -->
+    <div id="menu-container" style="display: none; position: absolute;">
+        <!-- Botão para escolher o tema -->
+        <button onclick="toggleThemeOptions()">
+            <i class="fas fa-paint-brush"></i> Tema
+        </button>
+
+        <!-- Opções de Tema (inicialmente ocultas) -->
+        <div id="theme-options" class="section-menu" style="display: none;">
+            <button onclick="setTheme('dark')">Dark Mode</button>
+            <button onclick="setTheme('light')">Light Mode</button>
+        </div>
+
+        <!-- Botões para escolher as seções -->
+        <div>
+            <button onclick="optionSections()">Seções</button>
+        </div>
+
+        <div id="sections" class="section-menu" style="display: none;">
+            <button onclick="sectionTijolo()">
+                Tijolo
+            </button>
+
+            <button onclick="sectionMadeira()">
+                Madeira
+            </button>
+
+            <button onclick="sectionCimento()">
+                Cimento
+            </button>
+
+            <button onclick="sectionTelha()">
+                Telha
+            </button>
+        </div>
+    </div>
+
+    <!-- Seção Tijolo -->
+    <div id="tijolo-container" style="display: block;">
+        <div class="section tijolo-section">
+            <h2>Tijolo</h2>
+            
+            <!-- Medidas do Tijolo -->
+            <h3>Medidas do Tijolo</h3>
+            <label for="altura-tijolo">Altura do Tijolo:</label>
+            <input type="number" id="altura-tijolo" placeholder="Altura do Tijolo (em cm)">
+
+            <label for="comprimento-tijolo">Comprimento do Tijolo:</label>
+            <input type="number" id="comprimento-tijolo" placeholder="Comprimento do Tijolo (em cm)">
+
+            <!-- Medidas da Parede -->
+            <h3>Medidas da Parede</h3>
+            <label for="altura-parede">Altura da Parede:</label>
+            <input type="number" id="altura-parede" placeholder="Altura da Parede (em cm)">
+
+            <label for="comprimento-parede">Comprimento da Parede:</label>
+            <input type="number" id="comprimento-parede" placeholder="Comprimento da Parede (em cm)">
+
+            <!-- Resultado do Cálculo -->
+            <p>A quantidade de tijolos necessários para essa parede é: <h3><span id="resultado-tijolos"></span> Und</h3></p>
+
+            <!-- Botão para calcular -->
+            <button onclick="calcularTijolos()">Calcular</button>
+            <button onclick="clearinfTijolos()" class="closebutão">Limpar</button>
+        </div>
+    </div>
+
+    <!-- Seção Telha -->
+    <div id="telha-container" style="display: none;">
+        <div class="section telha-section">
+            <h2>Telha</h2>
+            <p>Conteúdo sobre Telha...</p>
+        </div>
+    </div>
+
+    <!-- Seção Madeira -->
+    <div id="madeira-container" style="display: none;">
+        <div class="section madeira-section">
+            <h2>Madeira</h2>
+            
+            <!-- Medidas da Desempena -->
+            <h3>Medidas da Desempena</h3>
+            <label for="altura-desempena">Altura da Desempena:</label>
+            <input type="number" id="altura-desempena" placeholder="Altura da Desempena (em cm)">
+
+            <label for="largura-desempena">Largura da Desempena:</label>
+            <input type="number" id="largura-desempena" placeholder="Largura da Desempena (em cm)">
+
+            <label for="largura-desempena-beiral">Largura da Desempena (com beiral):</label>
+            <input type="number" id="largura-desempena-beiral" placeholder="Largura da Desempena (com beiral) (em cm)">
+
+            <label for="comprimento-linha">Comprimento da Linha:</label>
+            <input type="number" id="comprimento-linha1" placeholder="Comprimento da Linha (em cm)">
+            
+            <!-- Medidas de Bitola/Espaçamento -->
+            <h3>Medidas de Bitola/Espaçamento</h3>
+            <label for="espacamento-linhas">Espaçamento de Linhas:</label>
+            <input type="number" id="espacamento-linhas" placeholder="Espaçamento de Linhas (em cm)">
+
+            <label for="bitola-caibro">Bitola de Caibro:</label>
+            <input type="number" id="bitola-caibro" placeholder="Bitola de Caibro (em cm)">
+
+            <label for="bitola-ripa">Bitola de Ripa:</label>
+            <input type="number" id="bitola-ripa" placeholder="Bitola de Ripa (em cm)">
+
+            <!-- Resultados dos Cálculos -->
+            <h3>Resultados dos Cálculos</h3>
+            <p>Comprimento da Queda da Desempena: <span id="hipotenusa-desempena"></span> cm</p>
+            <p>Comprimento da Linha/Ripa: <span id="comprimento-linha"></span> cm</p>
+            <p>Comprimento do Caibro: <span id="hipotenusa-desempena-beiral"></span> cm</p>
+            <p>Quantidade de Linha: <span id="qtd_linha"></span> Und</p>
+            <p>Quantidade de Caibro: <span id="qtd_caibro"></span> Und</p>
+            <p>Quantidade de Ripa: <span id="qtd_ripa"></span> Und</p>
+            <p>Inclinação do Telhado (90º): <span id="inclinação"></span>º</p>
+            <p>Inclinação do Telhado (100%): <span id="inclinação-porcentagem"></span>%</p>
+
+            <!-- Botão para calcular e limpar-->
+            <button onclick="calcularMadeira()">Calcular</button>
+            <button onclick="clearinfMadeira()" class="closebutão">Limpar</button>
+        </div>
+    </div>
+
+    <!-- Seção Cimento -->
+    <div id="cimento-container" style="display: none;">
+        <div class="section cimento-section">
+            <h2>Cimento</h2>
+            <p>Conteúdo sobre Cimento...</p>
+        </div>
+    </div>
+
+    <script>
+        var isDragging = false;
+
+        function toggleMenu() {
+            var menuContainer = document.getElementById('menu-container');
+            var themeOptions = document.getElementById('theme-options');
+            var optionSections_ = document.getElementById('sections');
+            menuContainer.style.display = menuContainer.style.display === 'none' ? 'block' : 'none';
+            themeOptions.style.display = 'none';
+            optionSections_.style.display = 'none';
+        }
+
+        function toggleThemeOptions() {
+            var themeOptions = document.getElementById('theme-options');
+            themeOptions.style.display = themeOptions.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function setTheme(theme) {
+            document.body.className = theme + '-theme';
+        }
+
+        // Funções para selecionar a seção desejada
+        function optionSections() {
+            var optionSections_ = document.getElementById('sections');
+            optionSections_.style.display = optionSections_.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function sectionMadeira() {
+            var madeiraContainer = document.getElementById('madeira-container');
+            var cimentoContainer = document.getElementById('cimento-container');
+            var telhaContainer = document.getElementById('telha-container');
+            var tijoloContainer = document.getElementById('tijolo-container');
+            madeiraContainer.style.display = 'block';
+            cimentoContainer.style.display = 'none';
+            telhaContainer.style.display = 'none';
+            tijoloContainer.style.display = 'none';
+        }
+        
+        function sectionCimento() {
+            var madeiraContainer = document.getElementById('madeira-container');
+            var cimentoContainer = document.getElementById('cimento-container');
+            var telhaContainer = document.getElementById('telha-container');
+            var tijoloContainer = document.getElementById('tijolo-container');
+            madeiraContainer.style.display = 'none';
+            cimentoContainer.style.display = 'block';
+            telhaContainer.style.display = 'none';
+            tijoloContainer.style.display = 'none';
+        }
+
+        function sectionTelha() {
+            var madeiraContainer = document.getElementById('madeira-container');
+            var cimentoContainer = document.getElementById('cimento-container');
+            var telhaContainer = document.getElementById('telha-container');
+            var tijoloContainer = document.getElementById('tijolo-container');
+            madeiraContainer.style.display = 'none';
+            cimentoContainer.style.display = 'none';
+            telhaContainer.style.display = 'block';
+            tijoloContainer.style.display = 'none';
+        }
+
+        function sectionTijolo() {
+            var madeiraContainer = document.getElementById('madeira-container');
+            var cimentoContainer = document.getElementById('cimento-container');
+            var telhaContainer = document.getElementById('telha-container');
+            var tijoloContainer = document.getElementById('tijolo-container');
+            madeiraContainer.style.display = 'none';
+            cimentoContainer.style.display = 'none';
+            telhaContainer.style.display = 'none';
+            tijoloContainer.style.display = 'block';
+        }
+
+        function activateCalculator() {
+            var calculatorContainer = document.getElementById('calculator-container');
+            calculatorContainer.style.display = 'block';
+            var calculator = document.getElementById('calculator');
+            calculator.addEventListener('mousedown', startDrag);
+
+            function startDrag(e) {
+                isDragging = true;
+                var offsetX = e.clientX - calculatorContainer.getBoundingClientRect().left;
+                var offsetY = e.clientY - calculatorContainer.getBoundingClientRect().top;
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', stopDrag);
+
+                function drag(e) {
+                    if (isDragging) {
+                        calculatorContainer.style.left = e.clientX - offsetX + 'px';
+                        calculatorContainer.style.top = e.clientY - offsetY + 'px';
+                    }
+                }
+
+                function stopDrag() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', drag);
+                    document.removeEventListener('mouseup', stopDrag);
+                }
+            }
+        }
+
+        function closeCalculator() {
+            var calculatorContainer = document.getElementById('calculator-container');
+            calculatorContainer.style.display = 'none';
+            document.getElementById('display').value = '';
+        }
+
+        function appendToDisplay(value) {
+            if (document.getElementById('display').value == "undefined" || document.getElementById('display').value == "Erro na expressão") {
+                document.getElementById('display').value = '';
+            }
+            document.getElementById('display').value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        function removeLastCharacter() {
+            var displayValue = document.getElementById('display').value;
+            document.getElementById('display').value = displayValue.slice(0, -1);
+        }
+
+        function calculateResult() {
+            try {
+                var expression = document.getElementById('display').value;
+                var result = eval(expression);
+                document.getElementById('display').value = result;
+            } catch (error) {
+                document.getElementById('display').value = 'Erro na expressão';
+            }
+        }
+
+        function calcularTijolos() {
+            var alturaTijolo = parseFloat(document.getElementById('altura-tijolo').value) || 0;
+            var comprimentoTijolo = parseFloat(document.getElementById('comprimento-tijolo').value) || 0;
+            var alturaParede = parseFloat(document.getElementById('altura-parede').value) || 0;
+            var comprimentoParede = parseFloat(document.getElementById('comprimento-parede').value) || 0;
+
+            var quantidadeTijolos = (alturaParede / alturaTijolo) * (comprimentoParede / comprimentoTijolo);
+
+            document.getElementById('resultado-tijolos').innerText = quantidadeTijolos.toFixed();
+        }
+
+        function calcularMadeira() {
+            var alturaDesempena = parseFloat(document.getElementById('altura-desempena').value) || 0;
+            var larguraDesempena = parseFloat(document.getElementById('largura-desempena').value) || 0;
+            var larguraDesempenaBeiral = parseFloat(document.getElementById('largura-desempena-beiral').value) || 0;
+            var comprimentoLinha = parseFloat(document.getElementById('comprimento-linha1').value) || 0;
+            var espacamentoLinhas = parseFloat(document.getElementById('espacamento-linhas').value) || 0;
+            var bitolaCaibro = parseFloat(document.getElementById('bitola-caibro').value) || 0;
+            var bitolaRipa = parseFloat(document.getElementById('bitola-ripa').value) || 0;
+
+            // Calculos da Desempena
+            var hipotenusaDesempena = Math.sqrt(Math.pow(alturaDesempena, 2) + Math.pow(larguraDesempena, 2));
+            var hipotenusaDesempenaBeiral = Math.sqrt(Math.pow(alturaDesempena, 2) + Math.pow(larguraDesempenaBeiral, 2));
+
+            // Resultados dos Cálculos
+            document.getElementById('hipotenusa-desempena').innerText = hipotenusaDesempena.toFixed();
+            document.getElementById('comprimento-linha').innerText = comprimentoLinha.toFixed();
+            document.getElementById('hipotenusa-desempena-beiral').innerText = hipotenusaDesempenaBeiral.toFixed();
+
+            // Calculos de Bitola/Espaçamento
+            var qtdLinha = 2*(hipotenusaDesempena / espacamentoLinhas)-1;
+            var qtdCaibro = 2*(comprimentoLinha / bitolaCaibro);
+            var qtdRipa = 2*(hipotenusaDesempenaBeiral / bitolaRipa);
+            var inclinacaoPorcentagem = alturaDesempena / hipotenusaDesempena * 100;
+            var inclinacao = alturaDesempena / hipotenusaDesempena;
+            var anguloRadianos = Math.asin(inclinacao);
+            var anguloGraus = anguloRadianos * (180 / Math.PI);
+
+            // Resultados dos Cálculos
+            document.getElementById('qtd_linha').innerText = qtdLinha.toFixed();
+            document.getElementById('qtd_caibro').innerText = qtdCaibro.toFixed();
+            document.getElementById('qtd_ripa').innerText = qtdRipa.toFixed();
+            document.getElementById('inclinação').innerText = anguloGraus.toFixed();
+            document.getElementById('inclinação-porcentagem').innerText = inclinacaoPorcentagem.toFixed();
+        }
+
+        function clearinfMadeira() {
+            // Limpar todas informações em Madeira
+            document.getElementById('hipotenusa-desempena').innerText = ""
+            document.getElementById('comprimento-linha').innerText = ""
+            document.getElementById('hipotenusa-desempena-beiral').innerText = ""
+            document.getElementById('qtd_linha').innerText = ""
+            document.getElementById('qtd_caibro').innerText = ""
+            document.getElementById('qtd_ripa').innerText = ""
+            document.getElementById('inclinação').innerText = ""
+            document.getElementById('inclinação-porcentagem').innerText = ""
+
+            // Limpar os Inputs
+            document.getElementById('altura-desempena').value = ""
+            document.getElementById('largura-desempena').value = ""
+            document.getElementById('largura-desempena-beiral').value = ""
+            document.getElementById('comprimento-linha1').value = ""
+            document.getElementById('espacamento-linhas').value = ""
+            document.getElementById('bitola-caibro').value = ""
+            document.getElementById('bitola-ripa').value = ""
+        }
+
+        function clearinfTijolos() {
+            // Limpar todas informações em Tijolo
+            document.getElementById('resultado-tijolos').innerText = ""
+
+            // Limpar os Inputs
+            document.getElementById('altura-tijolo').value = ""
+            document.getElementById('comprimento-tijolo').value = ""
+            document.getElementById('altura-parede').value = ""
+            document.getElementById('comprimento-parede').value = ""
+        }
+    </script>
+</body>
+</html>
